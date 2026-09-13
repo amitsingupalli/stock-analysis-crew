@@ -50,6 +50,15 @@ export interface PostgresReceipt {
   table: string;
 }
 
+export interface PriceCandle {
+  time: string; // 'YYYY-MM-DD'
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume?: number;
+}
+
 export interface StockAnalysisData {
   companyName: string;
   ticker: string;
@@ -66,6 +75,7 @@ export interface StockAnalysisData {
   metrics: FinancialMetric[];
   priceLadder: TechnicalLevel[];
   bearCaseRisks: BearCaseRisk[];
+  candles?: PriceCandle[];
   postgresReceipt?: PostgresReceipt;
   lastUpdated: string;
   pipelineSteps: AgentStep[];

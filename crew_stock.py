@@ -197,15 +197,39 @@ def run_crew_stock_analysis(target_ticker: str = "NVDA") -> dict:
             except Exception:
                 pass
 
+    # Real historical daily price candles (6-month timeframe)
+    candles = []
+    try:
+        hist = yf_ticker.history(period="6mo", interval="1d")
+        if not hist.empty:
+            import math
+            for idx, row in hist.iterrows():
+                close_val = float(row["Close"])
+                if math.isnan(close_val):
+                    continue
+                open_val = float(row["Open"]) if "Open" in row and not math.isnan(float(row["Open"])) else close_val
+                high_val = float(row["High"]) if "High" in row and not math.isnan(float(row["High"])) else max(open_val, close_val)
+                low_val = float(row["Low"]) if "Low" in row and not math.isnan(float(row["Low"])) else min(open_val, close_val)
+                vol_val = int(row["Volume"]) if "Volume" in row and not math.isnan(float(row["Volume"])) else 0
+                candles.append({
+                    "time": idx.strftime("%Y-%m-%d"),
+                    "open": round(open_val, 2),
+                    "high": round(high_val, 2),
+                    "low": round(low_val, 2),
+                    "close": round(close_val, 2),
+                    "volume": vol_val
+                })
+            if current_price == 0.0 and candles:
+                current_price = candles[-1]["close"]
+    except Exception:
+        pass
+
     # Extract real market price
-    current_price = float(info.get("currentPrice") or info.get("regularMarketPrice") or 0.0)
-    if current_price == 0.0:
-        try:
-            hist = yf_ticker.history(period="5d")
-            if not hist.empty:
-                current_price = float(hist["Close"].iloc[-1])
-        except Exception:
-            current_price = 100.0
+    current_price = float(info.get("currentPrice") or info.get("regularMarketPrice") or current_price or 0.0)
+    if current_price == 0.0 and candles:
+        current_price = candles[-1]["close"]
+    elif current_price == 0.0:
+        current_price = 100.0
 
     current_price = round(current_price, 2)
     company_name = info.get("shortName") or info.get("longName") or f"{ticker_clean} Corporation"
@@ -381,6 +405,7 @@ def run_crew_stock_analysis(target_ticker: str = "NVDA") -> dict:
             { "id": "s2", "level": "S2 Floor Support", "price": s2, "description": "52-Week Structural Floor", "type": "s2", "distancePercent": s2_dist }
         ],
         "bearCaseRisks": bear_risks,
+        "candles": candles,
         "lastUpdated": "Live Feed (Synced)",
         "pipelineSteps": [
             {

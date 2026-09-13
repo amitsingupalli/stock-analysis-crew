@@ -7,6 +7,7 @@ import { FinancialMetricsGrid } from './components/FinancialMetricsGrid';
 import { TechnicalPriceLadder } from './components/TechnicalPriceLadder';
 import { BullishCatalystsCard } from './components/BullishCatalystsCard';
 import { BearCaseRisks } from './components/BearCaseRisks';
+import { StockPriceChart } from './components/StockPriceChart';
 import { AlertCircle } from 'lucide-react';
 import { Currency } from './utils/currency';
 
@@ -107,6 +108,20 @@ export default function App() {
               baseCurrency={stockData.ticker.endsWith('.NS') || stockData.exchange === 'NSE' ? 'INR' : 'USD'}
             />
           </div>
+        </div>
+
+        {/* Full-Width Interactive Stock Chart & Technical Targets */}
+        <div className="w-full">
+          <StockPriceChart
+            candles={stockData.candles}
+            ticker={stockData.ticker}
+            companyName={stockData.companyName}
+            currentPrice={stockData.currentPrice}
+            targetPrice={stockData.targetPrice}
+            priceLadder={stockData.priceLadder}
+            currency={currency}
+            baseCurrency={stockData.ticker.endsWith('.NS') || stockData.exchange === 'NSE' ? 'INR' : 'USD'}
+          />
         </div>
 
         {/* Bottom Section: Strategic Catalysts & Risks */}
