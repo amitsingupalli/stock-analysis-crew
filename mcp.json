@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+      "postgres": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-postgres",
+          "postgresql://postgres:ShadoW777@localhost:5432/postgres"
+        ]
+      },
+      "duckduckgo": {
+        "command": "uvx",
+        "args": [
+          "duckduckgo-mcp-server"
+        ]
+      }
+    }
+  }
