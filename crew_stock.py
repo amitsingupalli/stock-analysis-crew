@@ -17,6 +17,9 @@ if sys.platform == "win32":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 import yfinance as yf
+import warnings
+warnings.filterwarnings("ignore")
+os.environ["LITELLM_LOG"] = "ERROR"
 import litellm
 litellm.drop_params = True
 
@@ -24,6 +27,8 @@ load_dotenv()
 
 if os.getenv("GEMINI_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
     os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
+elif os.getenv("GOOGLE_API_KEY") and not os.getenv("GEMINI_API_KEY"):
+    os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 _original_completion = litellm.completion
 def _custom_completion(*args, **kwargs):

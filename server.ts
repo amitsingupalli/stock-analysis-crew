@@ -181,23 +181,26 @@ function runCrewStockPython(ticker: string): Promise<any> {
     execFile(
       pythonExe,
       [scriptPath, ticker, '--json'],
-      { timeout: 18000, maxBuffer: 10 * 1024 * 1024 },
+      { timeout: 25000, maxBuffer: 10 * 1024 * 1024 },
       (error, stdout, stderr) => {
-        if (error) {
-          return reject(error);
-        }
         try {
           const firstBrace = stdout.indexOf('{');
           const lastBrace = stdout.lastIndexOf('}');
           if (firstBrace !== -1 && lastBrace !== -1) {
             const jsonStr = stdout.substring(firstBrace, lastBrace + 1);
             const data = JSON.parse(jsonStr);
-            return resolve(data);
+            if (data && data.ticker) {
+              return resolve(data);
+            }
           }
-          reject(new Error('Invalid JSON output from crew_stock.py'));
-        } catch (e) {
-          reject(e);
+        } catch (parseErr) {
+          // parse error
         }
+
+        if (error) {
+          return reject(error);
+        }
+        reject(new Error('Invalid JSON output from crew_stock.py'));
       }
     );
   });
