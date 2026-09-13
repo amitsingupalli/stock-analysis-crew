@@ -9,7 +9,7 @@ import { GoogleGenAI } from '@google/genai';
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
@@ -157,11 +157,12 @@ function runCrewStockPython(ticker: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const venvPythonWin = path.join(process.cwd(), '.venv', 'Scripts', 'python.exe');
     const venvPythonPosix = path.join(process.cwd(), '.venv', 'bin', 'python');
-    const pythonExe = fs.existsSync(venvPythonWin)
-      ? venvPythonWin
-      : fs.existsSync(venvPythonPosix)
-      ? venvPythonPosix
-      : 'python';
+    let pythonExe = 'python3';
+    if (process.platform === 'win32') {
+      pythonExe = fs.existsSync(venvPythonWin) ? venvPythonWin : 'python';
+    } else {
+      pythonExe = fs.existsSync(venvPythonPosix) ? venvPythonPosix : 'python3';
+    }
 
     const scriptPath = path.join(process.cwd(), 'crew_stock.py');
     const activeKey = keyRotator.getActiveKey();

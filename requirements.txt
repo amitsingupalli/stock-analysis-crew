@@ -3,3 +3,5 @@ crewai-tools
 sympy
 python-dotenv
 pydantic
+yfinance
+requests
