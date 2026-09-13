@@ -72,61 +72,67 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
         </div>
 
         {/* Key Valuation Highlight Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 my-5">
           {/* Current Price */}
-          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
-            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider">
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3 border border-[#1e293b] flex flex-col justify-between overflow-hidden">
+            <span className="text-[11px] font-mono text-[#94a3b8] uppercase tracking-wider truncate">
               Current Trading Price
             </span>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-mono font-bold text-[#f8fafc]">
+            <div className="mt-1.5 flex items-baseline gap-1 overflow-hidden">
+              <span
+                className="text-lg sm:text-base md:text-lg lg:text-base xl:text-xl font-mono font-bold text-[#f8fafc] truncate tracking-tight"
+                title={formatPrice(data.currentPrice, currency)}
+              >
                 {formatPrice(data.currentPrice, currency)}
               </span>
-              <span className="text-xs font-mono text-[#94a3b8]">{currency}</span>
+              <span className="text-[10px] font-mono text-[#94a3b8] shrink-0">{currency}</span>
             </div>
-            <span className="text-[10px] font-mono text-emerald-400/90 mt-1 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Spot Quote
+            <span className="text-[10px] font-mono text-emerald-400/90 mt-1 flex items-center gap-1 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span> Live Spot
             </span>
           </div>
 
           {/* 12-Month Target Price */}
-          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
-            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1">
-              <Target className="w-3.5 h-3.5 text-teal-400" />
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3 border border-[#1e293b] flex flex-col justify-between overflow-hidden">
+            <span className="text-[11px] font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1 truncate">
+              <Target className="w-3.5 h-3.5 text-teal-400 shrink-0" />
               12M Target Price
             </span>
-            <div className="mt-2 flex items-baseline gap-1.5">
-              <span className="text-2xl sm:text-3xl font-mono font-bold text-teal-400">
+            <div className="mt-1.5 flex items-baseline gap-1 overflow-hidden">
+              <span
+                className="text-lg sm:text-base md:text-lg lg:text-base xl:text-xl font-mono font-bold text-teal-400 truncate tracking-tight"
+                title={formatPrice(data.targetPrice, currency)}
+              >
                 {formatPrice(data.targetPrice, currency)}
               </span>
-              <span className="text-xs font-mono text-[#94a3b8]">{currency}</span>
+              <span className="text-[10px] font-mono text-[#94a3b8] shrink-0">{currency}</span>
             </div>
-            <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
-              12M Consensus Target
+            <span className="text-[10px] font-mono text-[#94a3b8] mt-1 truncate">
+              Consensus Target
             </span>
           </div>
 
           {/* Projected Upside */}
-          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
-            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1">
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3 border border-[#1e293b] flex flex-col justify-between overflow-hidden">
+            <span className="text-[11px] font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1 truncate">
               {data.projectedUpside >= 0 ? (
-                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               ) : (
-                <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+                <TrendingDown className="w-3.5 h-3.5 text-red-400 shrink-0" />
               )}
               Projected Upside
             </span>
-            <div className="mt-2 flex items-baseline gap-1">
+            <div className="mt-1.5 flex items-baseline gap-1 overflow-hidden">
               <span
-                className={`text-2xl sm:text-3xl font-mono font-bold ${
+                className={`text-lg sm:text-base md:text-lg lg:text-base xl:text-xl font-mono font-bold truncate tracking-tight ${
                   data.projectedUpside >= 0 ? 'text-emerald-400' : 'text-red-400'
                 }`}
               >
                 {data.projectedUpside >= 0 ? `+${data.projectedUpside.toFixed(2)}%` : `${data.projectedUpside.toFixed(2)}%`}
               </span>
             </div>
-            <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
-              {data.projectedUpside > 15 ? 'High Alpha Potential' : 'Moderate Expansion'}
+            <span className="text-[10px] font-mono text-[#94a3b8] mt-1 truncate">
+              {data.projectedUpside > 15 ? 'High Potential' : 'Moderate'}
             </span>
           </div>
         </div>

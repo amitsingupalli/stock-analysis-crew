@@ -38,8 +38,8 @@ export const FinancialMetricsGrid: React.FC<FinancialMetricsGridProps> = ({ metr
             </div>
           </div>
 
-          <div className="my-2.5">
-            <div className="text-2xl sm:text-3xl font-mono font-extrabold text-[#f8fafc] tracking-tight">
+          <div className="my-2.5 overflow-hidden">
+            <div className="text-xl sm:text-2xl md:text-3xl font-mono font-extrabold text-[#f8fafc] tracking-tight truncate">
               {m.value}
             </div>
           </div>

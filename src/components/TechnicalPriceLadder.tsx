@@ -85,22 +85,22 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
               className={`p-3 rounded-lg border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${style.bg}`}
             >
               {/* Left: Level label & description */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <span
-                  className={`text-xs font-mono font-bold px-2.5 py-1 rounded uppercase tracking-wider shrink-0 ${style.badge}`}
+                  className={`text-xs font-mono font-bold px-2 py-0.5 rounded uppercase tracking-wider shrink-0 ${style.badge}`}
                 >
                   {lvl.level}
                 </span>
-                <span className="text-xs font-sans text-[#f8fafc] font-medium">
+                <span className="text-xs font-sans text-[#f8fafc] font-medium truncate">
                   {lvl.description}
                 </span>
               </div>
 
               {/* Right: Price & Distance Spread */}
-              <div className="flex items-center justify-between sm:justify-end gap-3 pl-2 sm:pl-0">
+              <div className="flex items-center justify-between sm:justify-end gap-2.5 pl-2 sm:pl-0 shrink-0 ml-auto">
                 {!isCurrent && (
                   <span
-                    className={`text-xs font-mono font-semibold ${
+                    className={`text-xs font-mono font-semibold shrink-0 ${
                       distance > 0 ? 'text-red-400' : 'text-teal-400'
                     }`}
                   >
@@ -108,14 +108,14 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
                   </span>
                 )}
                 {isCurrent && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/40 animate-pulse">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/40 animate-pulse shrink-0">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    ACTIVE SPOT
+                    SPOT
                   </span>
                 )}
 
-                <div className="flex items-baseline gap-1">
-                  <span className={`text-lg sm:text-xl font-mono ${style.priceColor}`}>
+                <div className="flex items-baseline gap-1 shrink-0 text-right">
+                  <span className={`text-sm sm:text-base font-mono font-bold tracking-tight ${style.priceColor}`}>
                     {formatPrice(lvl.price, currency)}
                   </span>
                   <span className="text-[10px] font-mono text-[#94a3b8]">{currency}</span>
@@ -128,14 +128,18 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
 
       {/* Trade execution advice footer */}
       <div className="mt-4 pt-3 border-t border-[#1e293b] flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] font-mono text-[#94a3b8]">
-        <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Execution Strategy:</span>
-          <span className="text-emerald-300 font-semibold">Scale In at S1 ($120.00), Stop Below S2 ($110.00)</span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span>Execution:</span>
+          <span className="text-emerald-300 font-semibold">
+            Accumulate at S1 ({formatPrice(sortedLevels.find((l) => l.type === 's1')?.price || 120, currency)}), Stop Below S2 ({formatPrice(sortedLevels.find((l) => l.type === 's2')?.price || 110, currency)})
+          </span>
         </div>
-        <div className="flex items-center gap-1">
-          <span>Target Exit:</span>
-          <span className="text-red-400 font-semibold">R1-R2 Zone ($140 - $150)</span>
+        <div className="flex items-center gap-1 shrink-0">
+          <span>Target:</span>
+          <span className="text-red-400 font-semibold">
+            R1-R2 Zone ({formatPrice(sortedLevels.find((l) => l.type === 'r1')?.price || 140, currency)} - {formatPrice(sortedLevels.find((l) => l.type === 'r2')?.price || 150, currency)})
+          </span>
         </div>
       </div>
     </div>
