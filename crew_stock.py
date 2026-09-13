@@ -15,14 +15,12 @@ import yfinance as yf
 from dotenv import load_dotenv
 load_dotenv()
 
-# Keep API keys consistent
-if os.getenv("GEMINI_API_KEY") and not os.getenv("GOOGLE_API_KEY"):
-    os.environ["GOOGLE_API_KEY"] = os.getenv("GEMINI_API_KEY")
-elif os.getenv("GOOGLE_API_KEY") and not os.getenv("GEMINI_API_KEY"):
-    os.environ["GEMINI_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+# Initialize multi-key pool manager
+from gemini_keys import key_manager
+active_key = key_manager.get_active_key()
 
 def get_crew_pipeline():
-    """Lazily construct CrewAI multi-agent pipeline when LLM orchestration is required."""
+    """Lazily construct CrewAI multi-agent pipeline with automatic API key rotation on quota limits."""
     from typing import Type
     import sympy as sp
     from pydantic import BaseModel, Field
@@ -32,20 +30,45 @@ def get_crew_pipeline():
 
     litellm.drop_params = True
     _original_completion = litellm.completion
+
     def _custom_completion(*args, **kwargs):
-        for attempt in range(3):
+        # Always ensure active key is passed
+        current_active = key_manager.get_active_key()
+        if current_active:
+            kwargs["api_key"] = current_active
+
+        max_attempts = max(3, key_manager.total_keys * 2)
+        last_exception = None
+
+        for attempt in range(max_attempts):
             try:
                 return _original_completion(*args, **kwargs)
             except Exception as e:
+                last_exception = e
                 err_msg = str(e).lower()
-                if ("429" in err_msg or "resource_exhausted" in err_msg or "rate_limit" in err_msg) and attempt < 2:
-                    time.sleep(5)
-                else:
-                    raise e
+                is_quota_err = any(term in err_msg for term in [
+                    "429", "resource_exhausted", "rate_limit", "quota", "exhausted", "limit"
+                ])
+                if is_quota_err and key_manager.total_keys > 1:
+                    new_key = key_manager.rotate_key(reason=f"429 Quota limit: {str(e)[:80]}")
+                    if new_key:
+                        kwargs["api_key"] = new_key
+                        time.sleep(1)
+                        continue
+                elif is_quota_err and attempt < 2:
+                    time.sleep(4)
+                    continue
+                raise e
+
+        if last_exception:
+            raise last_exception
+
     litellm.completion = _custom_completion
 
+    current_key = key_manager.get_active_key()
     llm = LLM(
-        model="gemini/gemini-3.5-flash",
+        model="gemini/gemini-2.5-flash",
+        api_key=current_key,
         temperature=0.2
     )
 

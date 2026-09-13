@@ -13,11 +13,135 @@ const PORT = 3000;
 
 app.use(express.json());
 
+class GeminiKeyRotator {
+  private keys: string[] = [];
+  private currentIndex: number = 0;
+  private exhaustedKeys = new Map<string, number>();
+  private readonly cooldownMs = 3600 * 1000; // 1 hour cooldown
+
+  constructor() {
+    this.discoverKeys();
+  }
+
+  public discoverKeys(): string[] {
+    const rawCandidates = [
+      process.env.GEMINI_API_KEY,
+      process.env.GEMINI_API_KEYS,
+      process.env.GOOGLE_API_KEY,
+      process.env.GOOGLE_API_KEYS,
+    ];
+
+    const discovered: string[] = [];
+
+    // Parse comma or semicolon separated keys
+    for (const raw of rawCandidates) {
+      if (raw) {
+        const parts = raw
+          .replace(/;/g, ',')
+          .replace(/\n/g, ',')
+          .split(',')
+          .map((k) => k.trim().replace(/^['"]|['"]$/g, ''))
+          .filter((k) => k.length > 10);
+        for (const p of parts) {
+          if (!discovered.includes(p)) discovered.push(p);
+        }
+      }
+    }
+
+    // Numbered variables: GEMINI_API_KEY_1..20, GOOGLE_API_KEY_1..20
+    for (const prefix of ['GEMINI_API_KEY_', 'GOOGLE_API_KEY_']) {
+      for (let i = 1; i <= 20; i++) {
+        const val = process.env[`${prefix}${i}`]?.trim()?.replace(/^['"]|['"]$/g, '');
+        if (val && val.length > 10 && !discovered.includes(val)) {
+          discovered.push(val);
+        }
+      }
+    }
+
+    this.keys = discovered;
+    this.currentIndex = 0;
+    if (this.keys.length > 0) {
+      console.log(`[Gemini Rotator] Initialized with ${this.keys.length} API key(s) in pool.`);
+    }
+    return this.keys;
+  }
+
+  public maskKey(key: string): string {
+    if (!key || key.length < 10) return '...';
+    return `${key.slice(0, 6)}...${key.slice(-4)}`;
+  }
+
+  public getActiveKey(): string | null {
+    if (this.keys.length === 0) {
+      this.discoverKeys();
+      if (this.keys.length === 0) return null;
+    }
+
+    const currentKey = this.keys[this.currentIndex];
+    const exhaustedTime = this.exhaustedKeys.get(currentKey);
+    if (exhaustedTime && Date.now() - exhaustedTime < this.cooldownMs) {
+      return this.rotateKey('Current key in cooldown');
+    }
+
+    return currentKey;
+  }
+
+  public rotateKey(reason: string = 'Daily limit / Quota reached'): string | null {
+    if (this.keys.length === 0) return null;
+
+    const failedKey = this.keys[this.currentIndex];
+    this.exhaustedKeys.set(failedKey, Date.now());
+    console.warn(
+      `[Gemini Rotator] Key #${this.currentIndex + 1} (${this.maskKey(failedKey)}) marked exhausted. Reason: ${reason}`
+    );
+
+    if (this.keys.length === 1) {
+      return failedKey;
+    }
+
+    // Search next available key not in cooldown
+    for (let i = 1; i < this.keys.length; i++) {
+      const nextIdx = (this.currentIndex + i) % this.keys.length;
+      const candidate = this.keys[nextIdx];
+      const exTime = this.exhaustedKeys.get(candidate);
+      if (!exTime || Date.now() - exTime >= this.cooldownMs) {
+        this.currentIndex = nextIdx;
+        console.log(
+          `[Gemini Rotator] Rotated to Key #${nextIdx + 1}/${this.keys.length} (${this.maskKey(candidate)})`
+        );
+        return candidate;
+      }
+    }
+
+    // Round-robin fallback if all hit quota
+    this.currentIndex = (this.currentIndex + 1) % this.keys.length;
+    const fallback = this.keys[this.currentIndex];
+    console.warn(
+      `[Gemini Rotator] All keys hit quota limits. Rotating round-robin to Key #${this.currentIndex + 1}/${this.keys.length}`
+    );
+    return fallback;
+  }
+
+  public get poolStats() {
+    return {
+      totalKeys: this.keys.length,
+      currentIndex: this.currentIndex + 1,
+      activeKeyMasked: this.keys.length > 0 ? this.maskKey(this.keys[this.currentIndex]) : null,
+      exhaustedCount: Array.from(this.exhaustedKeys.values()).filter(
+        (t) => Date.now() - t < this.cooldownMs
+      ).length,
+    };
+  }
+}
+
+const keyRotator = new GeminiKeyRotator();
+
 let aiClient: GoogleGenAI | null = null;
 function getAi(): GoogleGenAI | null {
-  if (!aiClient && process.env.GEMINI_API_KEY) {
-    aiClient = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
+  const activeKey = keyRotator.getActiveKey();
+  if (activeKey) {
+    return new GoogleGenAI({
+      apiKey: activeKey,
       httpOptions: {
         headers: {
           'User-Agent': 'aistudio-build',
@@ -25,7 +149,7 @@ function getAi(): GoogleGenAI | null {
       },
     });
   }
-  return aiClient;
+  return null;
 }
 
 // Executes Python CrewAI backend directly
@@ -40,11 +164,19 @@ function runCrewStockPython(ticker: string): Promise<any> {
       : 'python';
 
     const scriptPath = path.join(process.cwd(), 'crew_stock.py');
+    const activeKey = keyRotator.getActiveKey();
 
     execFile(
       pythonExe,
       [scriptPath, ticker, '--json'],
-      { timeout: 20000, maxBuffer: 10 * 1024 * 1024 },
+      {
+        timeout: 20000,
+        maxBuffer: 10 * 1024 * 1024,
+        env: {
+          ...process.env,
+          ...(activeKey ? { GEMINI_API_KEY: activeKey, GOOGLE_API_KEY: activeKey } : {}),
+        },
+      },
       (error, stdout, stderr) => {
         try {
           const firstBrace = stdout.indexOf('{');
@@ -75,6 +207,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     engine: 'Real-time Market Telemetry Engine (yfinance + SEC 10-Q)',
     pipeline: 'CrewAI Multi-Agent Architecture (crew_stock.py)',
+    keyPool: keyRotator.poolStats,
     timestamp: new Date().toISOString(),
   });
 });
