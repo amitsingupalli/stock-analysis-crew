@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Crew AI - Autonomous Stock Intelligence Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f8fafc; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-panel { background: rgba(20, 27, 45, 0.75); backdrop-filter: blur(12px); border: 1px solid #1e293b; }
+  </style>
+</head>
+<body class="p-4 sm:p-6 antialiased">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-[#1e293b]">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center font-mono font-bold text-emerald-400">AI</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold">Stock Crew AI</span>
+            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">Gemini 3.5 Flash Engine</span>
+          </div>
+          <p class="text-xs font-mono text-[#94a3b8]">CrewAI Multi-Agent Pipeline • PostgreSQL Audit Verified</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="text" value="NVDA" readonly class="font-mono px-3 py-1.5 rounded-lg bg-[#141b2d] border border-[#1e293b] text-sm text-center w-24">
+        <button class="px-4 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">Analyze Stock (~5s)</button>
+      </div>
+    </header>
+
+    <!-- Telemetry Bar -->
+    <div class="p-2.5 rounded-lg bg-[#141b2d] border border-[#1e293b] font-mono text-xs flex flex-wrap items-center gap-2">
+      <span class="text-slate-400 uppercase">CrewAI Pipeline:</span>
+      <span class="px-2 py-1 rounded bg-[#0b0f19] border border-[#1e293b] text-emerald-400">Agent 1: Researcher (yfinance & DDG MCP) ✓</span>
+      <span class="text-[#94a3b8]">→</span>
+      <span class="px-2 py-1 rounded bg-[#0b0f19] border border-teal-500/40 text-teal-300">Agent 2: Chief Investment Officer (Gemini 3.5 Flash) ✓</span>
+      <span class="text-[#94a3b8]">→</span>
+      <span class="px-2 py-1 rounded bg-[#0b0f19] border border-emerald-500/40 text-emerald-300">PostgreSQL DB Committed ✓</span>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Left Column: Hero -->
+      <div class="lg:col-span-5 glass-panel p-6 rounded-xl space-y-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-xs font-mono text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">NASDAQ: NVDA • Semiconductor</span>
+            <h1 class="text-3xl font-extrabold mt-1">NVIDIA Corp</h1>
+          </div>
+          <div class="text-right">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/60 font-mono font-bold text-sm tracking-wider shadow-[0_0_15px_rgba(16,185,129,0.3)]">BUY</span>
+            <div class="text-[11px] font-mono text-[#94a3b8] mt-1">Accumulate on Pullbacks</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 font-mono">
+          <div class="bg-[#0b0f19] p-3 rounded-lg border border-[#1e293b]">
+            <div class="text-[10px] text-[#94a3b8]">CURRENT PRICE</div>
+            <div class="text-xl font-bold text-[#f8fafc] mt-1">$132.50</div>
+          </div>
+          <div class="bg-[#0b0f19] p-3 rounded-lg border border-[#1e293b]">
+            <div class="text-[10px] text-[#94a3b8]">12M TARGET</div>
+            <div class="text-xl font-bold text-teal-400 mt-1">$165.00</div>
+          </div>
+          <div class="bg-[#0b0f19] p-3 rounded-lg border border-[#1e293b]">
+            <div class="text-[10px] text-[#94a3b8]">PROJECTED UPSIDE</div>
+            <div class="text-xl font-bold text-emerald-400 mt-1">+24.53%</div>
+          </div>
+        </div>
+
+        <div class="bg-[#0b0f19] p-4 rounded-lg border border-[#1e293b] space-y-2">
+          <div class="flex justify-between text-xs font-mono">
+            <span class="font-bold text-emerald-400">AI Conviction Score Meter</span>
+            <span class="font-bold text-[#f8fafc]">92/100</span>
+          </div>
+          <div class="w-full bg-[#141b2d] h-2.5 rounded-full overflow-hidden border border-[#1e293b]">
+            <div class="h-full bg-emerald-400" style="width: 92%"></div>
+          </div>
+          <p class="text-xs text-slate-300 mt-2">Uncontested leadership in accelerated compute clusters, sustained Hopper/Blackwell demand, and CUDA developer moats provide multi-year EPS acceleration exceeding street consensus.</p>
+        </div>
+      </div>
+
+      <!-- Right Column: Metrics & Ladder -->
+      <div class="lg:col-span-7 space-y-6">
+        <!-- Metrics -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono text-[#94a3b8] uppercase">YoY Revenue Growth</span>
+            <div class="text-3xl font-mono font-bold text-emerald-400 my-1">+94.0%</div>
+            <span class="text-xs font-mono text-[#94a3b8]">Data Center Hypergrowth</span>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono text-[#94a3b8] uppercase">Forward P/E Ratio</span>
+            <div class="text-3xl font-mono font-bold text-teal-400 my-1">31.8x</div>
+            <span class="text-xs font-mono text-[#94a3b8]">PEG ~ 1.0x (Attractive)</span>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono text-[#94a3b8] uppercase">Gross Margin</span>
+            <div class="text-3xl font-mono font-bold text-emerald-400 my-1">75.1%</div>
+            <span class="text-xs font-mono text-[#94a3b8]">Peak Software Pricing</span>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono text-[#94a3b8] uppercase">Free Cash Flow Margin</span>
+            <div class="text-3xl font-mono font-bold text-teal-400 my-1">48.5%</div>
+            <span class="text-xs font-mono text-[#94a3b8]">Elite Cash Engine</span>
+          </div>
+        </div>
+
+        <!-- Technical Ladder -->
+        <div class="glass-panel p-5 rounded-xl border border-[#1e293b] space-y-2 font-mono text-xs">
+          <div class="text-sm font-bold uppercase text-[#f8fafc] mb-3">Technical Entry & Exit Price Ladder</div>
+          <div class="p-3 bg-red-500/10 border border-red-500/30 rounded flex justify-between">
+            <span class="text-red-400 font-bold">R2 Resistance: $150.00</span>
+            <span class="text-slate-300">All-Time High / Target</span>
+          </div>
+          <div class="p-3 bg-orange-500/10 border border-orange-500/30 rounded flex justify-between">
+            <span class="text-orange-400 font-bold">R1 Resistance: $140.00</span>
+            <span class="text-slate-300">Local Peak / Supply Zone</span>
+          </div>
+          <div class="p-3 bg-emerald-500/20 border-2 border-emerald-500 rounded flex justify-between font-bold shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <span class="text-emerald-300">CURRENT PRICE: $132.50</span>
+            <span class="text-emerald-300">Highlighted Active Row</span>
+          </div>
+          <div class="p-3 bg-teal-500/10 border border-teal-500/30 rounded flex justify-between">
+            <span class="text-teal-300 font-bold">S1 Key Support: $120.00</span>
+            <span class="text-slate-300">100-Day EMA - Optimal Accumulation</span>
+          </div>
+          <div class="p-3 bg-[#1e293b]/50 border border-[#1e293b] rounded flex justify-between text-[#94a3b8]">
+            <span>S2 Floor Support: $110.00</span>
+            <span>200-Day SMA - Structural Stop</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Bear Risks -->
+      <div class="lg:col-span-7 space-y-3">
+        <div class="text-sm font-mono font-bold uppercase text-[#f8fafc]">Bear Case Risks (3 Structural Threats)</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono font-bold text-red-400">HIGH SEVERITY</span>
+            <h3 class="font-bold text-sm my-1">Hyperscaler Concentration</h3>
+            <p class="text-xs text-[#94a3b8]">Top 4 customers account for ~45% of Data Center revenue.</p>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono font-bold text-red-400">CRITICAL SEVERITY</span>
+            <h3 class="font-bold text-sm my-1">TSMC Geopolitical & CoWoS Bottlenecks</h3>
+            <p class="text-xs text-[#94a3b8]">100% reliance on TSMC advanced packaging.</p>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-[#1e293b]">
+            <span class="text-xs font-mono font-bold text-amber-400">MEDIUM SEVERITY</span>
+            <h3 class="font-bold text-sm my-1">Custom Cloud ASIC Competition</h3>
+            <p class="text-xs text-[#94a3b8]">Threat from internal cloud chips (TPU, Trainium) and AMD MI350.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Postgres Receipt -->
+      <div class="lg:col-span-5 glass-panel p-5 rounded-xl border border-[#1e293b] space-y-3 font-mono text-xs">
+        <div class="flex justify-between items-center">
+          <span class="font-bold uppercase text-[#f8fafc]">PostgreSQL Compliance Receipt Card</span>
+          <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">STATUS: SUCCESS</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px]">
+          <div class="bg-[#0b0f19] p-2 rounded border border-[#1e293b]"><span class="text-[#94a3b8] block">Host</span>prod-portfolio-db.internal</div>
+          <div class="bg-[#0b0f19] p-2 rounded border border-[#1e293b]"><span class="text-[#94a3b8] block">Schema</span>portfolio_management</div>
+          <div class="bg-[#0b0f19] p-2 rounded border border-[#1e293b]"><span class="text-[#94a3b8] block">Transaction ID</span>TXN-99824-NVDA</div>
+          <div class="bg-[#0b0f19] p-2 rounded border border-[#1e293b]"><span class="text-[#94a3b8] block">Execution</span>42ms (WAL-synced)</div>
+        </div>
+        <div class="bg-[#070a11] p-3 rounded border border-[#1e293b] text-[11px] text-slate-300 overflow-x-auto">
+          <pre>INSERT INTO investment_reports (ticker, company_name, rating, conviction_score, spot_price, target_12m, projected_upside) VALUES ('NVDA', 'NVIDIA Corp', 'BUY', 92, 132.50, 165.00, 24.53);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

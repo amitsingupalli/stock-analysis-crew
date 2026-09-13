@@ -1,0 +1,6 @@
+{
+  "name": "Stock Crew AI",
+  "description": "AI Stock Intelligence Dashboard powered by multi-agent CrewAI pipeline and Gemini Flash Engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

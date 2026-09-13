@@ -1,0 +1,198 @@
+import React from 'react';
+import { StockAnalysisData } from '../types';
+import { TrendingUp, TrendingDown, Target, Zap, ShieldAlert, Sparkles, Building2, Layers } from 'lucide-react';
+
+interface PrimaryHeroCardProps {
+  data: StockAnalysisData;
+}
+
+export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
+  const isBuy = data.verdict === 'BUY';
+  const isHold = data.verdict === 'HOLD';
+  const isSell = data.verdict === 'SELL';
+
+  // Glow Badge classes
+  const getVerdictBadgeStyle = () => {
+    if (isBuy) {
+      return 'bg-emerald-500/15 border-emerald-500/70 text-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.35)]';
+    }
+    if (isHold) {
+      return 'bg-amber-500/15 border-amber-500/70 text-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.35)]';
+    }
+    return 'bg-red-500/15 border-red-500/70 text-red-400 shadow-[0_0_24px_rgba(239,68,68,0.35)]';
+  };
+
+  const getVerdictDotColor = () => {
+    if (isBuy) return 'bg-emerald-400';
+    if (isHold) return 'bg-amber-400';
+    return 'bg-red-400';
+  };
+
+  return (
+    <div className="glass-panel rounded-xl p-5 sm:p-6 flex flex-col justify-between h-full relative overflow-hidden border border-[#1e293b]">
+      {/* Subtle background ambient gradient */}
+      <div
+        className={`absolute -top-24 -left-24 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none ${
+          isBuy ? 'bg-emerald-500' : isHold ? 'bg-amber-500' : 'bg-red-500'
+        }`}
+      />
+
+      <div>
+        {/* Top Header: Identity & Verdict */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-[#1e293b]">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-mono font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                {data.exchange}: {data.ticker}
+              </span>
+              <span className="text-xs text-[#94a3b8] font-sans flex items-center gap-1">
+                <Layers className="w-3.5 h-3.5 text-[#94a3b8]" />
+                {data.sector}
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#f8fafc] tracking-tight">
+              {data.companyName}
+            </h1>
+          </div>
+
+          {/* Glow Verdict Badge */}
+          <div className="flex flex-col sm:items-end">
+            <div
+              className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-full border text-base font-extrabold tracking-wider uppercase transition-all ${getVerdictBadgeStyle()}`}
+            >
+              <span className={`w-2.5 h-2.5 rounded-full ${getVerdictDotColor()} animate-ping`} />
+              <span>{data.verdict}</span>
+            </div>
+            <span className="text-[11px] font-mono text-[#94a3b8] mt-1.5 font-medium">
+              {data.verdictSubtitle}
+            </span>
+          </div>
+        </div>
+
+        {/* Key Valuation Highlight Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-5">
+          {/* Current Price */}
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
+            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider">
+              Current Trading Price
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-mono font-bold text-[#f8fafc]">
+                ${data.currentPrice.toFixed(2)}
+              </span>
+              <span className="text-xs font-mono text-[#94a3b8]">USD</span>
+            </div>
+            <span className="text-[10px] font-mono text-emerald-400/90 mt-1 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Spot Quote
+            </span>
+          </div>
+
+          {/* 12-Month Target Price */}
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
+            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1">
+              <Target className="w-3.5 h-3.5 text-teal-400" />
+              12M Target Price
+            </span>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-mono font-bold text-teal-400">
+                ${data.targetPrice.toFixed(2)}
+              </span>
+              <span className="text-xs font-mono text-[#94a3b8]">USD</span>
+            </div>
+            <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
+              Consensus CIO Projection
+            </span>
+          </div>
+
+          {/* Projected Upside */}
+          <div className="bg-[#0b0f19]/80 rounded-lg p-3.5 border border-[#1e293b] flex flex-col justify-between">
+            <span className="text-xs font-mono text-[#94a3b8] uppercase tracking-wider flex items-center gap-1">
+              {data.projectedUpside >= 0 ? (
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <TrendingDown className="w-3.5 h-3.5 text-red-400" />
+              )}
+              Projected Upside
+            </span>
+            <div className="mt-2 flex items-baseline gap-1">
+              <span
+                className={`text-2xl sm:text-3xl font-mono font-bold ${
+                  data.projectedUpside >= 0 ? 'text-emerald-400' : 'text-red-400'
+                }`}
+              >
+                {data.projectedUpside >= 0 ? `+${data.projectedUpside.toFixed(2)}%` : `${data.projectedUpside.toFixed(2)}%`}
+              </span>
+            </div>
+            <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
+              {data.projectedUpside > 15 ? 'High Alpha Potential' : 'Moderate Expansion'}
+            </span>
+          </div>
+        </div>
+
+        {/* AI Conviction Score Meter */}
+        <div className="bg-[#0b0f19]/90 rounded-lg p-4 border border-[#1e293b] mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-emerald-400" />
+              <span className="text-xs font-mono font-bold text-[#f8fafc] uppercase tracking-wider">
+                AI Conviction Score Meter
+              </span>
+            </div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl font-mono font-black text-emerald-400">
+                {data.convictionScore}
+              </span>
+              <span className="text-xs font-mono text-[#94a3b8]">/100</span>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full bg-[#141b2d] h-3 rounded-full overflow-hidden p-0.5 border border-[#1e293b]">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all duration-1000"
+              style={{ width: `${Math.min(100, Math.max(0, data.convictionScore))}%` }}
+            />
+          </div>
+
+          <div className="flex justify-between text-[10px] font-mono text-[#94a3b8] mt-1.5 px-0.5">
+            <span>50 (Neutral)</span>
+            <span>75 (High)</span>
+            <span className="text-emerald-400 font-semibold">90+ (High Conviction)</span>
+          </div>
+
+          {/* One-sentence AI Executive Summary */}
+          <div className="mt-3 pt-3 border-t border-[#1e293b]/70 flex items-start gap-2.5">
+            <Sparkles className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed text-[#f8fafc] font-sans font-medium">
+              <strong className="text-teal-300 font-mono">AI Executive Summary: </strong>
+              {data.aiExecutiveSummary}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Strategic Bullish Catalysts identified by CIO */}
+      {data.bullishCatalysts && data.bullishCatalysts.length > 0 && (
+        <div className="pt-2">
+          <div className="text-[11px] font-mono uppercase tracking-wider text-[#94a3b8] mb-2 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            CIO Identified Bullish Catalysts
+          </div>
+          <div className="space-y-1.5">
+            {data.bullishCatalysts.map((cat, idx) => (
+              <div
+                key={idx}
+                className="text-xs text-[#94a3b8] font-sans flex items-start gap-2 bg-[#0b0f19]/50 p-2 rounded border border-[#1e293b]/50"
+              >
+                <span className="text-emerald-400 font-mono font-bold text-xs shrink-0 mt-0.5">
+                  0{idx + 1}.
+                </span>
+                <span className="text-[#f8fafc]/90 leading-snug">{cat}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
