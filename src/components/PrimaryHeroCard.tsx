@@ -24,6 +24,8 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
     return 'bg-red-500/15 border-red-500/70 text-red-400 shadow-[0_0_24px_rgba(239,68,68,0.35)]';
   };
 
+  const getVerdictStyle = getVerdictBadgeStyle;
+
   const getVerdictDotColor = () => {
     if (isBuy) return 'bg-emerald-400';
     if (isHold) return 'bg-amber-400';

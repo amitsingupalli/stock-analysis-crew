@@ -84,7 +84,8 @@ def get_crew_pipeline():
             if not set(expression) <= allowed_chars:
                 return f"Error: '{expression}' contains disallowed characters."
             try:
-                return str(sp.sympify(expression).evalf())
+                parsed_expr = sp.sympify(expression)
+                return str(sp.N(parsed_expr))
             except Exception as exc:
                 return f"Error: {exc}"
 
