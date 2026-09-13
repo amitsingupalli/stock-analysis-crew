@@ -1,27 +1,53 @@
-# Environment & Keys (Strictly Private)
+# ================================================================
+# Environment & Secrets (Strictly Private & Never Committed)
+# ================================================================
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.pfx
+secrets/
+credentials.json
 
-# Python
+# Python Virtual Environments & Bytecode
 *.pyc
 __pycache__/
 .venv/
 venv/
+env/
+ENV/
 *.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Node & Frontend
+# Node & Build Artifacts
 node_modules/
 dist/
 dist-ssr/
 *.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Editor & OS
+# Browser & Test Logs
+.playwright-mcp/
+*.log
+
+# Editor & OS Artifacts
 .idea/
 .vscode/
+*.swp
+*.swo
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Archives & Temp
+# Archives & Temporary Extractions
 *.zip
+*.tar.gz
+*.rar
 temp_extract/
