@@ -30,6 +30,9 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
     return 'bg-red-400';
   };
 
+  const baseCurrency: Currency =
+    data.ticker.endsWith('.NS') || data.exchange === 'NSE' ? 'INR' : 'USD';
+
   return (
     <div className="glass-panel rounded-xl p-5 sm:p-6 flex flex-col justify-between h-full relative overflow-hidden border border-[#1e293b]">
       {/* Subtle background ambient gradient */}
@@ -43,31 +46,35 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
         {/* Top Header: Identity & Verdict */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-5 border-b border-[#1e293b]">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
-                {data.exchange}: {data.ticker}
+            <div className="flex items-center gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono text-[#f8fafc]">
+                {data.ticker}
               </span>
-              <span className="text-xs text-[#94a3b8] font-sans flex items-center gap-1">
-                <Layers className="w-3.5 h-3.5 text-[#94a3b8]" />
-                {data.sector}
+              <span className="text-xs px-2 py-0.5 rounded bg-[#1e293b] font-mono text-[#94a3b8]">
+                {data.exchange}
+              </span>
+              <span className="text-xs text-[#94a3b8] font-mono hidden md:inline">
+                • {data.sector}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#f8fafc] tracking-tight">
+            <h1 className="text-sm sm:text-base font-medium text-[#94a3b8] mt-0.5">
               {data.companyName}
             </h1>
           </div>
 
-          {/* Glow Verdict Badge */}
-          <div className="flex flex-col sm:items-end">
-            <div
-              className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-full border text-base font-extrabold tracking-wider uppercase transition-all ${getVerdictBadgeStyle()}`}
-            >
-              <span className={`w-2.5 h-2.5 rounded-full ${getVerdictDotColor()} animate-ping`} />
-              <span>{data.verdict}</span>
+          {/* Institutional Verdict Pill */}
+          <div className="flex items-center gap-3">
+            <div className="flex flex-col items-end">
+              <div
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono font-bold tracking-wider text-sm ${getVerdictStyle()}`}
+              >
+                <span className={`w-2 h-2 rounded-full animate-pulse ${getVerdictDotColor()}`} />
+                {data.verdict}
+              </div>
+              <span className="text-[11px] font-mono text-[#94a3b8] mt-1 text-right">
+                {data.verdictSubtitle}
+              </span>
             </div>
-            <span className="text-[11px] font-mono text-[#94a3b8] mt-1.5 font-medium">
-              {data.verdictSubtitle}
-            </span>
           </div>
         </div>
 
@@ -81,9 +88,9 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
             <div className="mt-1.5 flex items-baseline gap-1 overflow-hidden">
               <span
                 className="text-lg sm:text-base md:text-lg lg:text-base xl:text-xl font-mono font-bold text-[#f8fafc] truncate tracking-tight"
-                title={formatPrice(data.currentPrice, currency)}
+                title={formatPrice(data.currentPrice, currency, baseCurrency)}
               >
-                {formatPrice(data.currentPrice, currency)}
+                {formatPrice(data.currentPrice, currency, baseCurrency)}
               </span>
               <span className="text-[10px] font-mono text-[#94a3b8] shrink-0">{currency}</span>
             </div>
@@ -101,9 +108,9 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency
             <div className="mt-1.5 flex items-baseline gap-1 overflow-hidden">
               <span
                 className="text-lg sm:text-base md:text-lg lg:text-base xl:text-xl font-mono font-bold text-teal-400 truncate tracking-tight"
-                title={formatPrice(data.targetPrice, currency)}
+                title={formatPrice(data.targetPrice, currency, baseCurrency)}
               >
-                {formatPrice(data.targetPrice, currency)}
+                {formatPrice(data.targetPrice, currency, baseCurrency)}
               </span>
               <span className="text-[10px] font-mono text-[#94a3b8] shrink-0">{currency}</span>
             </div>

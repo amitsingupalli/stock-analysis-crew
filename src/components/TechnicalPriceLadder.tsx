@@ -7,9 +7,15 @@ interface TechnicalPriceLadderProps {
   levels: TechnicalLevel[];
   currentPrice: number;
   currency: Currency;
+  baseCurrency?: Currency;
 }
 
-export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ levels, currentPrice, currency }) => {
+export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({
+  levels,
+  currentPrice,
+  currency,
+  baseCurrency = 'USD',
+}) => {
   // Sort from highest price to lowest price
   const sortedLevels = [...levels].sort((a, b) => b.price - a.price);
 
@@ -116,7 +122,7 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
 
                 <div className="flex items-baseline gap-1 shrink-0 text-right">
                   <span className={`text-sm sm:text-base font-mono font-bold tracking-tight ${style.priceColor}`}>
-                    {formatPrice(lvl.price, currency)}
+                    {formatPrice(lvl.price, currency, baseCurrency)}
                   </span>
                   <span className="text-[10px] font-mono text-[#94a3b8]">{currency}</span>
                 </div>
@@ -132,13 +138,13 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
           <span>Execution:</span>
           <span className="text-emerald-300 font-semibold">
-            Accumulate at S1 ({formatPrice(sortedLevels.find((l) => l.type === 's1')?.price || 120, currency)}), Stop Below S2 ({formatPrice(sortedLevels.find((l) => l.type === 's2')?.price || 110, currency)})
+            Accumulate at S1 ({formatPrice(sortedLevels.find((l) => l.type === 's1')?.price || 120, currency, baseCurrency)}), Stop Below S2 ({formatPrice(sortedLevels.find((l) => l.type === 's2')?.price || 110, currency, baseCurrency)})
           </span>
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <span>Target:</span>
           <span className="text-red-400 font-semibold">
-            R1-R2 Zone ({formatPrice(sortedLevels.find((l) => l.type === 'r1')?.price || 140, currency)} - {formatPrice(sortedLevels.find((l) => l.type === 'r2')?.price || 150, currency)})
+            R1-R2 Zone ({formatPrice(sortedLevels.find((l) => l.type === 'r1')?.price || 140, currency, baseCurrency)} - {formatPrice(sortedLevels.find((l) => l.type === 'r2')?.price || 150, currency, baseCurrency)})
           </span>
         </div>
       </div>

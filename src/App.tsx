@@ -19,9 +19,15 @@ export default function App() {
 
   const popularTickersList = ['NVDA', 'AAPL', 'TSLA', 'MSFT'];
 
+  // Auto-load authentic live market telemetry on first render
+  React.useEffect(() => {
+    executeAnalysis('NVDA');
+  }, []);
+
   const executeAnalysis = async (tickerToAnalyze?: string) => {
     const targetTicker = (tickerToAnalyze || currentTicker).toUpperCase().trim();
     if (!targetTicker) return;
+    if (tickerToAnalyze) setCurrentTicker(tickerToAnalyze);
 
     setIsLoading(true);
     setErrorMessage(null);
@@ -34,23 +40,15 @@ export default function App() {
       });
 
       if (!response.ok) {
-        throw new Error(`Analysis server returned ${response.status}`);
+        const errorJson = await response.json().catch(() => ({}));
+        throw new Error(errorJson.error || `Analysis request returned status ${response.status}`);
       }
 
       const data: StockAnalysisData = await response.json();
       setStockData(data);
     } catch (err: any) {
-      console.warn('Backend API request failed, falling back to client cache:', err);
-      if (POPULAR_TICKERS[targetTicker]) {
-        setStockData(POPULAR_TICKERS[targetTicker]);
-      } else {
-        const fallback = {
-          ...NVDA_STOCK_DATA,
-          ticker: targetTicker,
-          companyName: `${targetTicker} Corp`,
-        };
-        setStockData(fallback);
-      }
+      console.warn('Backend API request failed:', err);
+      setErrorMessage(err?.message || `Could not fetch live market data for "${targetTicker}". Please verify ticker.`);
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +104,7 @@ export default function App() {
               levels={stockData.priceLadder}
               currentPrice={stockData.currentPrice}
               currency={currency}
+              baseCurrency={stockData.ticker.endsWith('.NS') || stockData.exchange === 'NSE' ? 'INR' : 'USD'}
             />
           </div>
         </div>
