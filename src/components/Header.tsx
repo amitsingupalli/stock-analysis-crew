@@ -88,8 +88,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#94a3b8]">
+            <div className="relative flex-1 sm:w-80 md:w-96">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94a3b8]">
                 <Search className="w-4 h-4" />
               </div>
               <input
@@ -97,11 +97,11 @@ export const Header: React.FC<HeaderProps> = ({
                 type="text"
                 value={localInput}
                 onChange={(e) => setLocalInput(e.target.value.toUpperCase())}
-                placeholder="Ticker e.g. NVDA"
-                maxLength={8}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#141b2d] border border-[#1e293b] text-[#f8fafc] placeholder-[#94a3b8] font-mono text-sm font-semibold tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all uppercase"
+                placeholder="Ticker e.g. NVDA, TSLA, RELIANCE..."
+                maxLength={40}
+                className="w-full pl-10 pr-14 py-2 rounded-lg bg-[#141b2d] border border-[#1e293b] text-[#f8fafc] placeholder-[#94a3b8]/70 font-mono text-sm font-semibold tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all uppercase"
               />
-              <span className="absolute right-2.5 top-2 text-[10px] font-mono text-[#94a3b8] bg-[#0b0f19] px-1.5 py-0.5 rounded border border-[#1e293b]">
+              <span className="absolute right-2.5 top-2 text-[10px] font-mono font-bold text-[#94a3b8] bg-[#0b0f19] px-2 py-0.5 rounded border border-[#1e293b]">
                 {currency}
               </span>
             </div>
