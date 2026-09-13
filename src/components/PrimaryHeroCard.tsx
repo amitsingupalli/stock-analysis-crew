@@ -100,7 +100,7 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
               <span className="text-xs font-mono text-[#94a3b8]">USD</span>
             </div>
             <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
-              Consensus CIO Projection
+              12M Consensus Target
             </span>
           </div>
 
@@ -129,13 +129,13 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
           </div>
         </div>
 
-        {/* AI Conviction Score Meter */}
-        <div className="bg-[#0b0f19]/90 rounded-lg p-4 border border-[#1e293b] mb-4">
+        {/* Conviction Score Meter */}
+        <div className="bg-[#0b0f19]/90 rounded-lg p-4 border border-[#1e293b]">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-emerald-400" />
               <span className="text-xs font-mono font-bold text-[#f8fafc] uppercase tracking-wider">
-                AI Conviction Score Meter
+                Conviction Score
               </span>
             </div>
             <div className="flex items-baseline gap-1">
@@ -157,42 +157,18 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
           <div className="flex justify-between text-[10px] font-mono text-[#94a3b8] mt-1.5 px-0.5">
             <span>50 (Neutral)</span>
             <span>75 (High)</span>
-            <span className="text-emerald-400 font-semibold">90+ (High Conviction)</span>
+            <span className="text-emerald-400 font-semibold">90+ (Strong Conviction)</span>
           </div>
 
-          {/* One-sentence AI Executive Summary */}
+          {/* Executive Summary */}
           <div className="mt-3 pt-3 border-t border-[#1e293b]/70 flex items-start gap-2.5">
-            <Sparkles className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
             <p className="text-xs leading-relaxed text-[#f8fafc] font-sans font-medium">
-              <strong className="text-teal-300 font-mono">AI Executive Summary: </strong>
+              <strong className="text-teal-300 font-mono">Executive Summary: </strong>
               {data.aiExecutiveSummary}
             </p>
           </div>
         </div>
       </div>
-
-      {/* Strategic Bullish Catalysts identified by CIO */}
-      {data.bullishCatalysts && data.bullishCatalysts.length > 0 && (
-        <div className="pt-2">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-[#94a3b8] mb-2 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            CIO Identified Bullish Catalysts
-          </div>
-          <div className="space-y-1.5">
-            {data.bullishCatalysts.map((cat, idx) => (
-              <div
-                key={idx}
-                className="text-xs text-[#94a3b8] font-sans flex items-start gap-2 bg-[#0b0f19]/50 p-2 rounded border border-[#1e293b]/50"
-              >
-                <span className="text-emerald-400 font-mono font-bold text-xs shrink-0 mt-0.5">
-                  0{idx + 1}.
-                </span>
-                <span className="text-[#f8fafc]/90 leading-snug">{cat}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -65,7 +65,7 @@ export const BullishCatalystsCard: React.FC<BullishCatalystsCardProps> = ({ cata
           <Zap className="w-3.5 h-3.5" />
           High Operating Leverage Factor
         </span>
-        <span className="text-slate-400">Verified by CIO Quantitative Model</span>
+        <span className="text-slate-400">Quantitative Valuation Model</span>
       </div>
     </div>
   );
