@@ -1,13 +1,15 @@
 import React from 'react';
 import { TechnicalLevel } from '../types';
-import { ChevronUp, ChevronDown, Layers, ArrowUpRight, ShieldCheck, Flame } from 'lucide-react';
+import { Layers, ShieldCheck } from 'lucide-react';
+import { Currency, formatPrice } from '../utils/currency';
 
 interface TechnicalPriceLadderProps {
   levels: TechnicalLevel[];
   currentPrice: number;
+  currency: Currency;
 }
 
-export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ levels, currentPrice }) => {
+export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ levels, currentPrice, currency }) => {
   // Sort from highest price to lowest price
   const sortedLevels = [...levels].sort((a, b) => b.price - a.price);
 
@@ -114,9 +116,9 @@ export const TechnicalPriceLadder: React.FC<TechnicalPriceLadderProps> = ({ leve
 
                 <div className="flex items-baseline gap-1">
                   <span className={`text-lg sm:text-xl font-mono ${style.priceColor}`}>
-                    ${lvl.price.toFixed(2)}
+                    {formatPrice(lvl.price, currency)}
                   </span>
-                  <span className="text-[10px] font-mono text-[#94a3b8]">USD</span>
+                  <span className="text-[10px] font-mono text-[#94a3b8]">{currency}</span>
                 </div>
               </div>
             </div>

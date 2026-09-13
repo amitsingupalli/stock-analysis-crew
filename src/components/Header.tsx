@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, TrendingUp } from 'lucide-react';
+import { Currency } from '../utils/currency';
 
 interface HeaderProps {
   ticker: string;
@@ -7,6 +8,8 @@ interface HeaderProps {
   onAnalyze: (ticker?: string) => void;
   isLoading: boolean;
   popularTickers: string[];
+  currency: Currency;
+  onCurrencyChange: (currency: Currency) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +18,8 @@ export const Header: React.FC<HeaderProps> = ({
   onAnalyze,
   isLoading,
   popularTickers,
+  currency,
+  onCurrencyChange,
 }) => {
   const [localInput, setLocalInput] = useState(ticker);
 
@@ -52,8 +57,36 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+        {/* Search Bar & Currency Toggle */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          {/* Currency Toggle Switch (USD | INR) */}
+          <div className="flex items-center rounded-lg bg-[#141b2d] border border-[#1e293b] p-0.5 text-xs font-mono self-start sm:self-auto shadow-inner">
+            <button
+              type="button"
+              onClick={() => onCurrencyChange('USD')}
+              className={`px-3 py-1.5 rounded-md font-bold transition-all flex items-center gap-1 ${
+                currency === 'USD'
+                  ? 'bg-emerald-500 text-slate-950 shadow-[0_0_12px_rgba(16,185,129,0.35)]'
+                  : 'text-[#94a3b8] hover:text-[#f8fafc]'
+              }`}
+            >
+              <span>USD</span>
+              <span className="text-[10px] opacity-80">($)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onCurrencyChange('INR')}
+              className={`px-3 py-1.5 rounded-md font-bold transition-all flex items-center gap-1 ${
+                currency === 'INR'
+                  ? 'bg-emerald-500 text-slate-950 shadow-[0_0_12px_rgba(16,185,129,0.35)]'
+                  : 'text-[#94a3b8] hover:text-[#f8fafc]'
+              }`}
+            >
+              <span>IND</span>
+              <span className="text-[10px] opacity-80">(₹)</span>
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:w-64">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#94a3b8]">
@@ -69,7 +102,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#141b2d] border border-[#1e293b] text-[#f8fafc] placeholder-[#94a3b8] font-mono text-sm font-semibold tracking-wider focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all uppercase"
               />
               <span className="absolute right-2.5 top-2 text-[10px] font-mono text-[#94a3b8] bg-[#0b0f19] px-1.5 py-0.5 rounded border border-[#1e293b]">
-                USD
+                {currency}
               </span>
             </div>
 
@@ -111,7 +144,10 @@ export const Header: React.FC<HeaderProps> = ({
           ))}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 text-[11px] font-mono text-[#94a3b8]">
+        <div className="flex items-center gap-3 shrink-0 text-[11px] font-mono text-[#94a3b8]">
+          <span className="text-slate-400 hidden sm:inline">
+            Rate: 1 USD = ₹87.00 INR
+          </span>
           <span className="flex items-center gap-1 text-emerald-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
             Live Market Feed

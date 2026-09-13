@@ -1,12 +1,14 @@
 import React from 'react';
 import { StockAnalysisData } from '../types';
-import { TrendingUp, TrendingDown, Target, Zap, ShieldAlert, Sparkles, Building2, Layers } from 'lucide-react';
+import { TrendingUp, TrendingDown, Target, Zap, Layers } from 'lucide-react';
+import { Currency, formatPrice } from '../utils/currency';
 
 interface PrimaryHeroCardProps {
   data: StockAnalysisData;
+  currency: Currency;
 }
 
-export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
+export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data, currency }) => {
   const isBuy = data.verdict === 'BUY';
   const isHold = data.verdict === 'HOLD';
   const isSell = data.verdict === 'SELL';
@@ -78,9 +80,9 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
             </span>
             <div className="mt-2 flex items-baseline gap-1.5">
               <span className="text-2xl sm:text-3xl font-mono font-bold text-[#f8fafc]">
-                ${data.currentPrice.toFixed(2)}
+                {formatPrice(data.currentPrice, currency)}
               </span>
-              <span className="text-xs font-mono text-[#94a3b8]">USD</span>
+              <span className="text-xs font-mono text-[#94a3b8]">{currency}</span>
             </div>
             <span className="text-[10px] font-mono text-emerald-400/90 mt-1 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Spot Quote
@@ -95,9 +97,9 @@ export const PrimaryHeroCard: React.FC<PrimaryHeroCardProps> = ({ data }) => {
             </span>
             <div className="mt-2 flex items-baseline gap-1.5">
               <span className="text-2xl sm:text-3xl font-mono font-bold text-teal-400">
-                ${data.targetPrice.toFixed(2)}
+                {formatPrice(data.targetPrice, currency)}
               </span>
-              <span className="text-xs font-mono text-[#94a3b8]">USD</span>
+              <span className="text-xs font-mono text-[#94a3b8]">{currency}</span>
             </div>
             <span className="text-[10px] font-mono text-[#94a3b8] mt-1">
               12M Consensus Target

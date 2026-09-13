@@ -8,10 +8,12 @@ import { TechnicalPriceLadder } from './components/TechnicalPriceLadder';
 import { BullishCatalystsCard } from './components/BullishCatalystsCard';
 import { BearCaseRisks } from './components/BearCaseRisks';
 import { AlertCircle } from 'lucide-react';
+import { Currency } from './utils/currency';
 
 export default function App() {
   const [currentTicker, setCurrentTicker] = useState<string>('NVDA');
   const [stockData, setStockData] = useState<StockAnalysisData>(NVDA_STOCK_DATA);
+  const [currency, setCurrency] = useState<Currency>('USD');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -63,6 +65,8 @@ export default function App() {
         onAnalyze={executeAnalysis}
         isLoading={isLoading}
         popularTickers={popularTickersList}
+        currency={currency}
+        onCurrencyChange={setCurrency}
       />
 
       {/* Error alert if any */}
@@ -89,7 +93,7 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Column: Primary Recommendation Hero Card (5 cols on lg) */}
           <div className="lg:col-span-5 flex flex-col">
-            <PrimaryHeroCard data={stockData} />
+            <PrimaryHeroCard data={stockData} currency={currency} />
           </div>
 
           {/* Right Column: Financial Metrics & Technical Levels Grid (7 cols on lg) */}
@@ -101,6 +105,7 @@ export default function App() {
             <TechnicalPriceLadder
               levels={stockData.priceLadder}
               currentPrice={stockData.currentPrice}
+              currency={currency}
             />
           </div>
         </div>
